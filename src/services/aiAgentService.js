@@ -84,10 +84,8 @@ class AiAgentService {
      * @returns {Promise<Array>} A promise that resolves to an array of history summary objects.
      */
     async getHistory(params = {}) {
-        if (!params.userId) throw new Error('User ID is required for fetching history.');
-        
+        // UserId is no longer sent from client, backend will handle it.
         const queryParams = {
-            userId: params.userId,
             page: params.page || 0,
             size: params.size || 20,
             ...(params.categoryId && { categoryId: params.categoryId })

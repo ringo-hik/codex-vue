@@ -19,9 +19,6 @@ public class ChatRequest {
     @Size(max = 1000, message = "메시지는 1000자를 초과할 수 없습니다.")
     private String message;
 
-    @NotEmpty(message = "사용자 ID는 필수입니다.")
-    private String userId;
-
     private String sessionId; // 기존 세션에 이어서 대화할 경우 사용
 }
 

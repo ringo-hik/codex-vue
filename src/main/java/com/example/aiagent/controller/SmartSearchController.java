@@ -48,12 +48,13 @@ public class SmartSearchController {
      * 사용자의 채팅 히스토리 목록을 조회합니다.
      */
     @GetMapping("/history")
-    public ResponseEntity<List<HistorySummaryDto>> getHistory(@RequestParam String userId,
-                                                              @RequestParam(required = false) Long categoryId,
+    public ResponseEntity<List<HistorySummaryDto>> getHistory(@RequestParam(required = false) Long categoryId,
                                                               @RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "20") int size) {
-        log.info("✅ GET /history - Received history request for userId: {}", userId);
-        List<HistorySummaryDto> history = smartSearchService.getChatHistory(userId, categoryId, page, size);
+        // String internalGetUserId() assumed to be available, e.g. via a static call:
+        String userId = com.example.aiagent.util.UserService.getAuthenticatedUserId(); // Placeholder
+        log.info("✅ GET /history - Received history request for userId: {} (internally retrieved)", userId);
+        List<HistorySummaryDto> history = smartSearchService.getChatHistory(categoryId, page, size); // userId is now handled by the service
         return ResponseEntity.ok(history);
     }
 

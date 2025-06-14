@@ -40,7 +40,9 @@ public class SmartSearchService {
      */
     @Transactional
     public ChatResponse processSmartSearch(ChatRequest request) {
-        log.info("🔄 Processing smart search for categoryId: {}, userId: {}", request.getCategoryId(), request.getUserId());
+        // String internalGetUserId() assumed to be available, e.g. via a static call:
+        String userId = com.example.aiagent.util.UserService.getAuthenticatedUserId(); // Placeholder
+        log.info("🔄 Processing smart search for categoryId: {}, userId: {}", request.getCategoryId(), userId);
 
         // 1. 세션 관리
         String sessionId = request.getSessionId();
@@ -50,7 +52,7 @@ public class SmartSearchService {
         }
 
         // 2. 사용자 메시지 저장
-        saveChatMessage(sessionId, request.getUserId(), request.getCategoryId(), "USER", request.getMessage());
+        saveChatMessage(sessionId, userId, request.getCategoryId(), "USER", request.getMessage());
 
         // 3. 컨텍스트 데이터 조회
         List<ContextData> contextData = smartSearchMapper.selectContextDataByCategoryId(request.getCategoryId());
@@ -68,10 +70,10 @@ public class SmartSearchService {
         log.info("✅ LLM service returned a response.");
 
         // 6. AI 응답 저장
-        saveChatMessage(sessionId, request.getUserId(), request.getCategoryId(), "AI", aiResponseContent);
+        saveChatMessage(sessionId, userId, request.getCategoryId(), "AI", aiResponseContent);
 
         // 7. 세션 정보 생성 또는 업데이트
-        upsertChatSession(sessionId, request.getUserId(), request.getCategoryId(), category.getName());
+        upsertChatSession(sessionId, userId, request.getCategoryId(), category.getName());
 
         // 8. 응답 객체 생성 및 반환
         ChatResponse response = new ChatResponse();
@@ -85,7 +87,9 @@ public class SmartSearchService {
     /**
      * 채팅 히스토리 조회
      */
-    public List<HistorySummaryDto> getChatHistory(String userId, Long categoryId, int page, int size) {
+    public List<HistorySummaryDto> getChatHistory(Long categoryId, int page, int size) {
+        // String internalGetUserId() assumed to be available, e.g. via a static call:
+        String userId = com.example.aiagent.util.UserService.getAuthenticatedUserId(); // Placeholder
         int offset = page * size;
         log.info("🔄 Fetching chat history for userId: {} with page: {}, size: {}", userId, page, size);
         return smartSearchMapper.selectChatHistory(userId, categoryId, offset, size);

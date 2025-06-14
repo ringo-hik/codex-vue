@@ -92,7 +92,8 @@ export default {
     async loadHistory() {
       this.loadingHistory = true;
       try {
-        this.chatHistory = await aiAgentService.getHistory({ userId: this.currentUser.id });
+        // userId is no longer passed; backend handles it.
+        this.chatHistory = await aiAgentService.getHistory({});
         this.isHistoryLoaded = true;
       } catch (error) {
         this.showToast('error', '히스토리 로딩 실패', error.message);
@@ -108,10 +109,9 @@ export default {
     },
     async handleMessageSent(data) {
       try {
-        const response = await aiAgentService.aiSmartSearch({
-          ...data,
-          userId: this.currentUser.id
-        });
+        // userId is no longer passed; backend handles it.
+        // The 'data' object from the event should contain categoryId, message, and sessionId (if any)
+        const response = await aiAgentService.aiSmartSearch(data);
         this.$refs.chatTab.addAiResponse(response);
         // If a new conversation starts, history becomes stale
         this.isHistoryLoaded = false; 
